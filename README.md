@@ -49,8 +49,8 @@ Experiment_Tracking/
 │
 ├── dataset/
 │   └── Churn_Modelling.csv   # Dataset file
-├── src/                      # Evaluate the model, log metrics and confusion matrix.
-│   ├── models.py             # Model training functions
+├── src/                      
+│   ├── evaluation.py         # Evaluate the model, log metrics and confusion matrix.
 │   ├── models.py             # Model training functions
 │   ├── preprocessing.py      # Data cleaning & transformer logic
 │   └── train.py              # Orchestration & MLflow logging
