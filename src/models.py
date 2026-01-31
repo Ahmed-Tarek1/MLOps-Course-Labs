@@ -16,7 +16,7 @@ def get_models():
     }
 
 
-def train_pipeline(model_name, model_instance, col_transf, X_train, y_train):
+def train_pipeline(model_name, model_instance, X_train, y_train):
     """Create a pipeline, train the model, return trained pipeline."""
     logger.info(f"Training {model_name}...")
     pipeline = Pipeline([
