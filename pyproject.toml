@@ -7,12 +7,14 @@ requires-python = ">=3.12"
 dependencies = [
     "joblib>=1.5.3",
     "litestar[standard]>=2.21.1",
+    "pandas>=3.0.3",
     "pydantic>=2.13.4",
-    "scikit-learn>=1.8.0",
+    "scikit-learn==1.6.1",
 ]
 
 [dependency-groups]
 dev = [
+    "hyperdx-opentelemetry>=0.3.0",
     "pre-commit>=4.2.0",
     "pytest>=9.0.3",
     "pytest-cov>=7.1.0",
