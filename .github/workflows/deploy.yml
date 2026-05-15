@@ -70,5 +70,5 @@ jobs:
             docker run -d \
               --name churn-api \
               --restart unless-stopped \
-              -p 8000:8000 \
+              -p 443:8000 \
               ${{ env.DOCKER_IMAGE }}:latest
