@@ -32,3 +32,18 @@ uv run pytest tests/ -v --cov=app --cov=main --cov-report=term-missing
 | GET    | `/`        | Welcome message          |
 | GET    | `/health`  | Health check             |
 | POST   | `/predict` | Returns churn prediction |
+
+## Axiom Monitoring Dashboard
+
+The API is instrumented with [Axiom](https://axiom.co/) for real-time observability.
+
+### Metrics Tracked
+| Category | Metric | Why it matters |
+|---|---|---|
+| Server | Average Response Time | Detect performance issues |
+| Data | Average Credit Score | Detect input data drift |
+| Model | Churn vs No-Churn Distribution | Detect model drift |
+| Server | Requests Per Minute | Monitor traffic volume |
+
+### Dashboard
+![Axiom Dashboard](./docs/axiom_dashboard.png)
