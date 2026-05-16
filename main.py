@@ -7,21 +7,23 @@ Then open:
     http://localhost:8000/schema/swagger
 """
 
+import time
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from litestar import Litestar, get, post
 from pydantic import BaseModel
-
 from app.logger_setup import setup_logging
 from app.model_utils import FEATURE_COLUMNS, predict_churn
 
-logger = setup_logging()
-
+logger, axiom_client = setup_logging()
+DATASET = os.getenv("AXIOM_DATASET")
 
 # ---------------------------------------------------------------------------
 # Request Schema
 # ---------------------------------------------------------------------------
 class ChurnRequest(BaseModel):
-    # TODO 1: Add one field (type float) per feature your model expects
     CreditScore: float
     Geography: str
     Gender: str
@@ -50,18 +52,37 @@ async def health() -> dict:
 
 @post("/predict")
 async def predict(data: ChurnRequest) -> dict:
+    start_time = time.time()
     features = [getattr(data, col) for col in FEATURE_COLUMNS]
-    logger.info(f"Predicting churn for features: {features}")
-
     prediction = predict_churn(features)
-    logger.info(f"Prediction result: {prediction}")
+    duration_ms = round((time.time() - start_time) * 1000, 2)
+
+    # Send structured event to Axiom
+    axiom_client.ingest_events(dataset=DATASET, events=[{
+        # Server metrics
+        "response_time_ms": duration_ms,
+        "endpoint": "/predict",
+        "status_code": 201,
+
+        # Model metrics
+        "predicted_class": "Churn" if prediction == 1 else "No Churn",
+        "churn": prediction == 1,
+
+        # Data metrics
+        "credit_score": data.CreditScore,
+        "age": data.Age,
+        "balance": data.Balance,
+        "geography": data.Geography,
+        "gender": data.Gender,
+        "num_of_products": data.NumOfProducts,
+        "is_active_member": data.IsActiveMember,
+    }])
 
     return {"churn_prediction": prediction}
 
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
-# TODO 5: Register your endpoint functions in the list below
 app = Litestar(
     route_handlers=[home, health, predict],
 )
